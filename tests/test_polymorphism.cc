@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "zeromatrix.hh"
+#include "linalg/zeromatrix.hh"
 
 using namespace linalg;
 

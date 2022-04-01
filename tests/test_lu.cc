@@ -2,9 +2,9 @@
 
 #include <stdexcept>
 
-#include "fullmatrix.hh"
-#include "lu_decomp.hh"
-#include "recursivematrix.hh"
+#include "linalg/fullmatrix.hh"
+#include "linalg/lu_decomp.hh"
+#include "linalg/recursivematrix.hh"
 #include "testutil.hh"
 
 using namespace linalg;

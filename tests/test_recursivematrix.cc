@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "recursivematrix.hh"
+#include "linalg/recursivematrix.hh"
 
 using namespace linalg;
 

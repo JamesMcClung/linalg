@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "fullmatrix.hh"
+#include "linalg/fullmatrix.hh"
 
 using namespace linalg;
 

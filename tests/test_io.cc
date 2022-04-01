@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
 #include "config.hh"
-#include "matrix_io.hh"
+#include "linalg/matrix_io.hh"
 
 using namespace linalg;
 

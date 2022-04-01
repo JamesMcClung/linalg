@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
-#include "fullmatrix.hh"
-#include "zeromatrix.hh"
+#include "linalg/fullmatrix.hh"
+#include "linalg/zeromatrix.hh"
 
 using namespace linalg;
 

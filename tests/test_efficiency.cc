@@ -3,7 +3,7 @@
 #include <chrono>
 #include <iostream>
 
-#include "recursivematrix.hh"
+#include "linalg/recursivematrix.hh"
 
 using namespace linalg;
 

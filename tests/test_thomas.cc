@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 
-#include "bandedmatrix.hh"
+#include "linalg/bandedmatrix.hh"
+#include "linalg/thomas.hh"
 #include "testutil.hh"
-#include "thomas.hh"
 
 using namespace linalg;
 

@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "bandedmatrix.hh"
+#include "linalg/bandedmatrix.hh"
 
 using namespace linalg;
 
