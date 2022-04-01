@@ -31,6 +31,38 @@ TEST(MatrixIO, WriteRead) {
     ASSERT_EQ(f_saved, f_loaded);
 }
 
+TEST(MatrixIO, WriteRead_TransposeOut) {
+    auto file = TEST_OUT_DIRECTORY "MatrixIO.WriteRead_TransposeOut.csv";
+    const int nrows = 6, ncols = 9;
+
+    FullMatrix<nrows, ncols, double> f_saved;
+    prepMatrix(f_saved);
+    saveMatrix_transpose(file, f_saved);
+
+    auto f_loaded = loadMatrix<ncols, nrows, double>(file);
+    for (int r = 0; r < nrows; r++) {
+        for (int c = 0; c < ncols; c++) {
+            ASSERT_EQ(f_saved(r, c), f_loaded(c, r));
+        }
+    }
+}
+
+TEST(MatrixIO, WriteRead_TransposeIn) {
+    auto file = TEST_OUT_DIRECTORY "MatrixIO.WriteRead_TransposeIn.csv";
+    const int nrows = 6, ncols = 9;
+
+    FullMatrix<nrows, ncols, double> f_saved;
+    prepMatrix(f_saved);
+    saveMatrix(file, f_saved);
+
+    auto f_loaded = loadMatrix_transpose<ncols, nrows, double>(file);
+    for (int r = 0; r < nrows; r++) {
+        for (int c = 0; c < ncols; c++) {
+            ASSERT_EQ(f_saved(r, c), f_loaded(c, r));
+        }
+    }
+}
+
 TEST(MatrixIO, WriteWriteRead) {
     auto file = TEST_OUT_DIRECTORY "MatrixIO.WriteWriteRead.csv";
     const int nrows = 6, ncols = 9;
