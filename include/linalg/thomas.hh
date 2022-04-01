@@ -16,6 +16,9 @@ namespace linalg {
 ////////////////////////////////////////////////////////////////////////
 
 template <class TridiagMatrix, class SomeMatrix>
+void thomas_in_place(const TridiagMatrix &bmat, SomeMatrix &rhs);
+
+template <class TridiagMatrix, class SomeMatrix>
 SomeMatrix thomas(const TridiagMatrix &bmat, SomeMatrix rhs);
 
 ////////////////////////////////////////////////////////////////////////
@@ -23,7 +26,7 @@ SomeMatrix thomas(const TridiagMatrix &bmat, SomeMatrix rhs);
 ////////////////////////////////////////////////////////////////////////
 
 template <class TridiagMatrix, class SomeMatrix>
-SomeMatrix thomas(const TridiagMatrix &bmat, SomeMatrix rhs) {
+void thomas_in_place(const TridiagMatrix &bmat, SomeMatrix &rhs) {
     static_assert(TridiagMatrix::nrows == TridiagMatrix::ncols, "Coefficient matrix must be square.");
     static_assert(TridiagMatrix::nrows == SomeMatrix::nrows, "Coefficient matrix and rhs must have same number of rows.");
     static_assert(std::is_same_v<typename TridiagMatrix::real_t, typename SomeMatrix::real_t>, "Coefficient matrix and rhs must be over the same field.");
@@ -44,6 +47,11 @@ SomeMatrix thomas(const TridiagMatrix &bmat, SomeMatrix rhs) {
             (rhs(r, c) -= bmat.get(r, r + 1) * rhs.get(r + 1, c)) /= altered_diag[r];
         }
     }
+}
+
+template <class TridiagMatrix, class SomeMatrix>
+SomeMatrix thomas(const TridiagMatrix &bmat, SomeMatrix rhs) {
+    thomas_in_place(bmat, rhs);
     return rhs;
 }
 
