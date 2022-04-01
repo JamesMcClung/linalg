@@ -46,3 +46,35 @@ TEST(Efficiency, SparseMultiplication_RMatVsFMat) {
     // most recent benchmark on 2.6 GHz 6-Core Intel Core i7: ~5.8x speedup
     // std::cout << "fmat mean time: " << f_time / nbatches << " ns\nrmat mean time: " << r_time / nbatches << " ns\nspeedup: " << (float)f_time / r_time << "x\n";
 }
+
+TEST(Efficiency, FVecIndexing_RowVsCol) {
+    const int len = 1024;
+    FullMatrix<len, 1, int> colvec;
+    FullMatrix<1, len, int> rowvec;
+
+    int64_t r_time, c_time;
+
+    int nbatches = 512;
+    for (int batch = 0; batch < nbatches; batch++) {
+        auto col_start = TIME;
+        for (int i = 0; i < len; i++)
+            colvec(i, 1) = i * batch;
+        auto col_end = TIME;
+
+        auto row_start = TIME;
+        for (int i = 0; i < len; i++)
+            rowvec(1, i) = i * batch;
+        auto row_end = TIME;
+
+        if (batch > 2) {
+            r_time += std::chrono::duration_cast<std::chrono::nanoseconds>(row_end - row_start).count();
+            c_time += std::chrono::duration_cast<std::chrono::nanoseconds>(col_end - col_start).count();
+        }
+    }
+
+    EXPECT_NEAR(r_time, c_time, (r_time + c_time) / 40);
+
+    // most recent benchmark on 2.6 GHz 6-Core Intel Core i7: consistently at least ~1.015x faster
+    // std::cout << r_time << '\t' << c_time << '\n';
+    // std::cout << "col vector indexing is ~" << 1.0 * r_time / c_time << " faster than row vector indexing\n";
+}
