@@ -169,3 +169,21 @@ TEST(FullMatrix, Negate) {
 
     EXPECT_EQ(-f, ref);
 }
+
+TEST(FullMatrix, ManyOps) {
+    FullMatrix f1({{0, 1}, {2, 3}, {4, -5}});
+    FullMatrix f2({{0, 0}, {4, 1}, {-3, -5}});
+    FullMatrix f3({{4, 1}, {-2, 0}, {1, 2}});
+    int a1 = 2, a2 = -3, a3 = 0;
+    int b0 = 2, b4 = 2;
+    FullMatrix f4({{0, -3}, {1, 5}, {-2, -1}});
+
+    FullMatrix<3, 2, int> ref;
+    for (int c = 0; c < ref.ncols; c++)
+        for (int r = 0; r < ref.nrows; r++)
+            ref(r, c) = -b0 * (a1 * f1.get(r, c) + a2 * f2.get(r, c) + a3 * f3.get(r, c)) / b4 - f4(r, c);
+
+    auto res = -b0 * (a1 * f1 + a2 * f2 + a3 * f3) / b4 - f4;
+
+    EXPECT_EQ(res, ref);
+}
