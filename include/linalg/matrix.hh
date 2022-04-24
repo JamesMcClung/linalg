@@ -1,6 +1,6 @@
 #pragma once
 
-#include <iostream>
+#include <ostream>
 
 namespace linalg {
 
@@ -33,7 +33,7 @@ class Matrix {
     static constexpr int ncols = nc;
 
     virtual Real operator()(int i, int j) const = 0;
-    Real get(int i, int j) const; // an alias for operator()(int, int) const
+    Real get(int i, int j) const;  // an alias for operator()(int, int) const
 };
 
 template <int nr, int nc, typename Real>
