@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cmath>
 #include <ostream>
 
 namespace linalg {
@@ -36,6 +37,8 @@ class Complex {
 
     Complex conj() const;
     Real mag2() const;
+
+    static Complex phase(Real angle);
 };
 
 template <typename Real>
@@ -89,6 +92,11 @@ Complex<Real> Complex<Real>::conj() const {
 template <typename Real>
 Real Complex<Real>::mag2() const {
     return real * real + imag * imag;
+}
+
+template <typename Real>
+Complex<Real> Complex<Real>::phase(Real angle) {
+    return Complex(std::cos(angle), std::sin(angle));
 }
 
 template <typename Real>

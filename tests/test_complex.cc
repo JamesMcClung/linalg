@@ -95,3 +95,11 @@ TEST(Complex, MagnitudeSquare) {
 
     EXPECT_EQ(c.mag2(), 53);
 }
+
+TEST(Complex, Phase) {
+    C c1 = C::phase(0);
+    C c2 = C::phase(M_PI / 2);
+
+    EXPECT_EQ(c1, 1);
+    EXPECT_NEAR((c2 - C(0, 1)).mag2(), 0, 1e-16);
+}
