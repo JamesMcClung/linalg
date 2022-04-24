@@ -33,7 +33,6 @@ class Complex {
 
     Complex operator*(Complex c) const;
     Complex operator/(Complex c) const;
-    Complex operator/(Real r) const;
 
     Complex conj() const;
     Real mag2() const;
@@ -77,13 +76,9 @@ Complex<Real> Complex<Real>::operator*(Complex<Real> c) const {
 }
 
 template <typename Real>
-Complex<Real> Complex<Real>::operator/(Real r) const {
-    return Complex(real / r, imag / r);
-}
-
-template <typename Real>
 Complex<Real> Complex<Real>::operator/(Complex<Real> c) const {
-    return (*this) * c.conj() / c.mag2();
+    Real mag2 = c.mag2();
+    return Complex((real * c.real + imag * c.imag) / mag2, (imag * c.real - real * c.imag) / mag2);
 }
 
 template <typename Real>
