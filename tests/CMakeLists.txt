@@ -20,6 +20,8 @@ add_executable(test_linalg
         test_io.cc
         test_lu.cc
         test_thomas.cc
+        
+        test_complex.cc
         )
 
 target_link_libraries(test_linalg linalg gtest_main)
