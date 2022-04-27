@@ -18,6 +18,8 @@ namespace linalg {
 template <typename Real>
 class Complex {
    public:
+    using real_t = Real;
+
     Real real, imag;
 
     Complex() : real(0), imag(0){};
