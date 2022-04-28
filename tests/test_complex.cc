@@ -15,10 +15,10 @@ TEST(Complex, ImplicitConversions) {
     static_assert(std::is_same_v<decltype(c + 1), C>, "Expect implicit conversion to work.");
     static_assert(std::is_same_v<decltype(c - 1), C>, "Expect implicit conversion to work.");
 
-    // static_assert(std::is_same_v<decltype(2 * c), C>, "Expect implicit conversion to work.");
-    // static_assert(std::is_same_v<decltype(2 / c), C>, "Expect implicit conversion to work.");
-    // static_assert(std::is_same_v<decltype(1 + c), C>, "Expect implicit conversion to work.");
-    // static_assert(std::is_same_v<decltype(1 - c), C>, "Expect implicit conversion to work.");
+    static_assert(std::is_same_v<decltype(2 * c), C>, "Expect implicit conversion to work.");
+    static_assert(std::is_same_v<decltype(2 / c), C>, "Expect implicit conversion to work.");
+    static_assert(std::is_same_v<decltype(1 + c), C>, "Expect implicit conversion to work.");
+    static_assert(std::is_same_v<decltype(1 - c), C>, "Expect implicit conversion to work.");
 }
 
 TEST(Complex, Equals) {

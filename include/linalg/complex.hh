@@ -42,6 +42,19 @@ class Complex {
     Complex operator*(Complex c) const;
     Complex operator/(Complex c) const;
 
+    friend Complex operator+(Real r, Complex c) {
+        return c + r;
+    }
+    friend Complex operator-(Real r, Complex c) {
+        return Complex(r) - c;
+    }
+    friend Complex operator*(Real r, Complex c) {
+        return c * r;
+    }
+    friend Complex operator/(Real r, Complex c) {
+        return Complex(r) / c;
+    }
+
     Complex conj() const;
     Real mag2() const;
 
