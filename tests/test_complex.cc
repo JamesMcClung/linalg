@@ -74,7 +74,7 @@ TEST(Complex, Multiplication) {
     C c1(1, 2), c2(-1, 3);
 
     EXPECT_EQ(c1 * c2, C(-7, 1));
-    // EXPECT_EQ(c1 * 2, C(2, 4));
+    EXPECT_EQ(c1 * 2, C(2, 4));
 }
 
 TEST(Complex, Division) {
@@ -102,4 +102,36 @@ TEST(Complex, Phase) {
 
     EXPECT_EQ(c1, 1);
     EXPECT_NEAR((c2 - C(0, 1)).mag2(), 0, 1e-16);
+}
+
+TEST(Complex, AddAssign) {
+    C c1(1, 2), c2(-1, 3), ref(0, 5);
+
+    EXPECT_NE(c1, ref);
+    EXPECT_EQ(&(c1 += c2), &c1);
+    EXPECT_EQ(c1, ref);
+}
+
+TEST(Complex, SubtractAssign) {
+    C c1(1, 2), c2(-1, 3), ref(2, -1);
+
+    EXPECT_NE(c1, ref);
+    EXPECT_EQ(&(c1 -= c2), &c1);
+    EXPECT_EQ(c1, ref);
+}
+
+TEST(Complex, MultiplyAssign) {
+    C c1(1, 2), c2(-1, 3), ref(-7, 1);
+
+    EXPECT_NE(c1, ref);
+    EXPECT_EQ(&(c1 *= c2), &c1);
+    EXPECT_EQ(c1, ref);
+}
+
+TEST(Complex, DivideAssign) {
+    C c1(-7, 1), c2(1, 2), ref(-1, 3);
+
+    EXPECT_NE(c1, ref);
+    EXPECT_EQ(&(c1 /= c2), &c1);
+    EXPECT_EQ(c1, ref);
 }
