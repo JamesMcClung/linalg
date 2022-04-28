@@ -74,17 +74,16 @@ auto fft_impl(const ColVec &u) {
         uhat(i, 0) = u(_fft_util::reverse_bits(i, log_dim), 0);
     }
 
-    for (Uint s = 1; s <= log_dim; s++) {
-        Uint m = 1 << s;
-        Complex<Real> omega_m = Complex<Real>::phase(phase_sign * 2 * M_PI / m);
-        for (Uint k = 0; k < dim; k += m) {
+    for (Uint m = 1; m < dim; m *= 2) {
+        Complex<Real> omega_m = Complex<Real>::phase(phase_sign * M_PI / m);
+        for (Uint i = 0; i < dim; i += 2 * m) {
             Complex<Real> omega = 1;
-            for (Uint j = 0; j < m / 2; j++) {
-                auto t = omega * uhat(k + j + m / 2, 0);
-                auto u = uhat(k + j, 0);
-                uhat(k + j, 0) = u + t;
-                uhat(k + j + m / 2, 0) = u - t;
-                omega = omega * omega_m;
+            for (Uint j = 0; j < m; j++) {
+                auto a = uhat(i + j, 0);
+                auto b = omega * uhat(i + j + m, 0);
+                uhat(i + j, 0) = a + b;
+                uhat(i + j + m, 0) = a - b;
+                omega *= omega_m;
             }
         }
     }
