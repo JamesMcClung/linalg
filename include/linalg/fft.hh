@@ -22,10 +22,8 @@ namespace linalg {
 
 namespace _fft_util {
 
-// Reverses the last <nbits> bits and returns the result.
 template <typename Uint>
-Uint reverse_bits(Uint i, Uint nbits) {
-    static_assert(sizeof(Uint) * CHAR_BIT == 16, "reverse_bits not implemented for this type");  // and I can't get enable_if to work here
+Uint reverse_bits_impl(Uint i, Uint nbits, std::integral_constant<int, 16>) {
     i = (i & 0xaaaa) >> 1 | (i & 0x5555) << 1;
     i = (i & 0xcccc) >> 2 | (i & 0x3333) << 2;
     i = (i & 0xf0f0) >> 4 | (i & 0x0f0f) << 4;
@@ -33,13 +31,18 @@ Uint reverse_bits(Uint i, Uint nbits) {
     return i >> (16 - nbits);
 }
 
+// Returns the last `nbits` bits of `i` reversed
+template <typename Uint>
+Uint reverse_bits(Uint i, Uint nbits) {
+    return reverse_bits_impl(i, nbits, std::integral_constant<int, sizeof(Uint) * CHAR_BIT>());
+}
+
 // Returns the base-2 log, rounded down.
 template <typename Uint>
 Uint log(Uint n) {
     Uint log = 0;
-    for (Uint i = 1; i < n; i *= 2) {
+    for (Uint i = 1; i < n; i *= 2)
         ++log;
-    }
     return log;
 }
 
