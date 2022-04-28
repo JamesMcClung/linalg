@@ -19,35 +19,54 @@ class FullMatrix : public Matrix<nrows, ncols, Real> {
     FullMatrix(const Real (&_vals)[nrows][ncols]);
     explicit FullMatrix(const Matrix<nrows, ncols, Real> &m);
 
-    Real &operator()(int i, int j);
-    Real operator()(int i, int j) const override;
+    ////////////////////////////////////////////////////////////////////
+    // Indexing
 
-    FullMatrix<nrows, ncols, Real> &operator*=(const Real &r);
-    FullMatrix<nrows, ncols, Real> &operator/=(const Real &r);
+    Real &operator()(int i, int j) {
+        return vals[i][j];
+    }
+    Real operator()(int i, int j) const override {
+        return vals[i][j];
+    }
 
-    FullMatrix<nrows, ncols, Real> &operator+=(const Matrix<nrows, ncols, Real> &m);
-    FullMatrix<nrows, ncols, Real> &operator-=(const Matrix<nrows, ncols, Real> &m);
+    ////////////////////////////////////////////////////////////////////
+    // Assignment operators
+
+    FullMatrix &operator*=(const Real &r);
+    FullMatrix &operator/=(const Real &r);
+
+    FullMatrix &operator+=(const Matrix<nrows, ncols, Real> &m);
+    FullMatrix &operator-=(const Matrix<nrows, ncols, Real> &m);
+
+    ////////////////////////////////////////////////////////////////////
+    // Arithmetic operators
+
+    FullMatrix operator*(const Real &r) const {
+        return FullMatrix(*this) *= r;
+    }
+    friend FullMatrix operator*(const Real &r, const FullMatrix &m) {
+        return m * r;
+    }
+
+    FullMatrix operator/(const Real &r) const {
+        return FullMatrix(*this) /= r;
+    }
+
+    FullMatrix operator-() const {
+        return FullMatrix(Real(0)) -= *this;
+    }
+
+    FullMatrix operator-(const FullMatrix &m) const {
+        return FullMatrix(*this) -= m;
+    }
+
+    FullMatrix operator+(FullMatrix m) const {
+        return m += *this;
+    }
 };
 
 template <int nrows, int ninner, int ncols, typename Real>
 FullMatrix<nrows, ncols, Real> operator*(const FullMatrix<nrows, ninner, Real> &m1, const FullMatrix<ninner, ncols, Real> &m2);
-
-template <int nrows, int ncols, typename Real>
-FullMatrix<nrows, ncols, Real> operator+(const FullMatrix<nrows, ncols, Real> &m1, const FullMatrix<nrows, ncols, Real> &m2);
-
-template <int nrows, int ncols, typename Real>
-FullMatrix<nrows, ncols, Real> operator-(const FullMatrix<nrows, ncols, Real> &m1, const FullMatrix<nrows, ncols, Real> &m2);
-
-template <int nrows, int ncols, typename Real>
-FullMatrix<nrows, ncols, Real> operator-(const FullMatrix<nrows, ncols, Real> &m);
-
-template <int nrows, int ncols, typename Real>
-FullMatrix<nrows, ncols, Real> operator*(const FullMatrix<nrows, ncols, Real> &m, const Real &r);
-template <int nrows, int ncols, typename Real>
-FullMatrix<nrows, ncols, Real> operator*(const Real &r, const FullMatrix<nrows, ncols, Real> &m);
-
-template <int nrows, int ncols, typename Real>
-FullMatrix<nrows, ncols, Real> operator/(const FullMatrix<nrows, ncols, Real> &m, const Real &r);
 
 ////////////////////////////////////////////////////////////////////////
 //                            DEFINITIONS                             //
@@ -78,16 +97,6 @@ FullMatrix<nrows, ncols, Real>::FullMatrix(const Matrix<nrows, ncols, Real> &m) 
             vals[r][c] = m(r, c);
         }
     }
-}
-
-template <int nrows, int ncols, typename Real>
-Real FullMatrix<nrows, ncols, Real>::operator()(int i, int j) const {
-    return vals[i][j];
-}
-
-template <int nrows, int ncols, typename Real>
-Real &FullMatrix<nrows, ncols, Real>::operator()(int i, int j) {
-    return vals[i][j];
 }
 
 template <int nrows, int ncols, typename Real>
@@ -130,23 +139,6 @@ FullMatrix<nrows, ncols, Real> &FullMatrix<nrows, ncols, Real>::operator-=(const
     return *this;
 }
 
-template <int nrows, int ncols, typename Real>
-FullMatrix<nrows, ncols, Real> operator*(const FullMatrix<nrows, ncols, Real> &m, const Real &r) {
-    FullMatrix<nrows, ncols, Real> m_copy = m;
-    return m_copy *= r;
-}
-
-template <int nrows, int ncols, typename Real>
-FullMatrix<nrows, ncols, Real> operator*(const Real &r, const FullMatrix<nrows, ncols, Real> &m) {
-    return m * r;
-}
-
-template <int nrows, int ncols, typename Real>
-FullMatrix<nrows, ncols, Real> operator/(const FullMatrix<nrows, ncols, Real> &m, const Real &r) {
-    FullMatrix<nrows, ncols, Real> m_copy = m;
-    return m_copy /= r;
-}
-
 template <int nrows, int ninner, int ncols, typename Real>
 FullMatrix<nrows, ncols, Real> operator*(const FullMatrix<nrows, ninner, Real> &m1, const FullMatrix<ninner, ncols, Real> &m2) {
     FullMatrix<nrows, ncols, Real> m;
@@ -160,24 +152,6 @@ FullMatrix<nrows, ncols, Real> operator*(const FullMatrix<nrows, ninner, Real> &
         }
     }
     return m;
-}
-
-template <int nrows, int ncols, typename Real>
-FullMatrix<nrows, ncols, Real> operator+(const FullMatrix<nrows, ncols, Real> &m1, const FullMatrix<nrows, ncols, Real> &m2) {
-    FullMatrix<nrows, ncols, Real> m(m1);
-    return m += m2;
-}
-
-template <int nrows, int ncols, typename Real>
-FullMatrix<nrows, ncols, Real> operator-(const FullMatrix<nrows, ncols, Real> &m1, const FullMatrix<nrows, ncols, Real> &m2) {
-    FullMatrix<nrows, ncols, Real> m(m1);
-    return m -= m2;
-}
-
-template <int nrows, int ncols, typename Real>
-FullMatrix<nrows, ncols, Real> operator-(const FullMatrix<nrows, ncols, Real> &m) {
-    FullMatrix<nrows, ncols, Real> neg_m(Real(0));
-    return neg_m -= m;
 }
 
 }  // namespace linalg
