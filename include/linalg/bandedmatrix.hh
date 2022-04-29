@@ -76,7 +76,7 @@ class BandedMatrix : public Matrix<dim, dim, Real> {
     BandedMatrix &operator-=(const BandedMatrix &bm);
 
     template <int nc>
-    FullMatrix<dim, nc, Real> operator*(const FullMatrix<dim, nc, Real> &fm);
+    FullMatrix<dim, nc, Real> operator*(const FullMatrix<dim, nc, Real> &fm) const;
 };
 
 ////////////////////////////////////////////////////////////////////////
@@ -172,7 +172,7 @@ BandedMatrix<dim, lbw, ubw, Real> &BandedMatrix<dim, lbw, ubw, Real>::operator-=
 
 template <int dim, int lbw, int ubw, typename Real>
 template <int nc>
-FullMatrix<dim, nc, Real> BandedMatrix<dim, lbw, ubw, Real>::operator*(const FullMatrix<dim, nc, Real> &fm) {
+FullMatrix<dim, nc, Real> BandedMatrix<dim, lbw, ubw, Real>::operator*(const FullMatrix<dim, nc, Real> &fm) const {
     FullMatrix<dim, nc, Real> res(Real(0));
     for (int r = 0; r < res.nrows; r++) {
         for (int c = 0; c < res.ncols; c++) {
