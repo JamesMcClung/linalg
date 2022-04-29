@@ -35,7 +35,7 @@ TEST(Complex, NotEquals) {
     EXPECT_FALSE(c1 != c1);
 }
 
-TEST(Complex, Constructors1) {
+TEST(Complex, Constructors_Zero) {
     C c1, c2(0), c3(0, 0), c4(c1);
 
     EXPECT_EQ(c1, c2);
@@ -43,13 +43,21 @@ TEST(Complex, Constructors1) {
     EXPECT_EQ(c1, c4);
 }
 
-TEST(Complex, Constructors2) {
+TEST(Complex, Constructors_Nonzero) {
     C c1(1), c2(1, 0), c3(c1);
 
     EXPECT_EQ(c1, c2);
     EXPECT_EQ(c1, c3);
 
     EXPECT_NE(c1, C(0, 1));
+}
+
+TEST(Complex, Assignment) {
+    C c1, c2(-1, 3);
+
+    EXPECT_NE(c1, c2);
+    EXPECT_EQ(&(c1 = c2), &c1);
+    EXPECT_EQ(c1, c2);
 }
 
 TEST(Complex, Addition) {

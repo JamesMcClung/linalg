@@ -25,15 +25,18 @@ class Complex {
     Complex() : real(0), imag(0){};
     Complex(Real real) : real(real), imag(0){};
     Complex(Real real, Real imag) : real(real), imag(imag){};
-    Complex(const Complex &c) : real(c.real), imag(c.imag){};
+    Complex(Complex const &) = default;
+
+    Complex &operator=(Complex const &) & = default;
+    Complex &operator=(Complex const &) && = delete;
 
     bool operator==(Complex c) const;
     bool operator!=(Complex c) const;
 
-    Complex &operator+=(Complex c);
-    Complex &operator-=(Complex c);
-    Complex &operator*=(Complex c);
-    Complex &operator/=(Complex c);
+    Complex &operator+=(Complex c) &;
+    Complex &operator-=(Complex c) &;
+    Complex &operator*=(Complex c) &;
+    Complex &operator/=(Complex c) &;
 
     Complex operator+(Complex c) const;
     Complex operator-(Complex c) const;
@@ -79,27 +82,27 @@ bool Complex<Real>::operator!=(Complex<Real> c) const {
 }
 
 template <typename Real>
-Complex<Real> &Complex<Real>::operator+=(Complex<Real> c) {
+Complex<Real> &Complex<Real>::operator+=(Complex<Real> c) & {
     real += c.real;
     imag += c.imag;
     return *this;
 }
 
 template <typename Real>
-Complex<Real> &Complex<Real>::operator-=(Complex<Real> c) {
+Complex<Real> &Complex<Real>::operator-=(Complex<Real> c) & {
     real -= c.real;
     imag -= c.imag;
     return *this;
 }
 
 template <typename Real>
-Complex<Real> &Complex<Real>::operator*=(Complex<Real> c) {
+Complex<Real> &Complex<Real>::operator*=(Complex<Real> c) & {
     *this = *this * c;
     return *this;
 }
 
 template <typename Real>
-Complex<Real> &Complex<Real>::operator/=(Complex<Real> c) {
+Complex<Real> &Complex<Real>::operator/=(Complex<Real> c) & {
     *this = *this / c;
     return *this;
 }
