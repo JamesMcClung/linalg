@@ -85,6 +85,9 @@ Real PermutationMatrix<dim, Real>::operator()(int i, int j) const {
 template <int dim, typename Real, class SomeMatrix, typename>
 SomeMatrix operator*(const PermutationMatrix<dim, Real>& p, SomeMatrix m) {
     bool wasRowHandled[dim];
+    for (int i = 0; i < dim; i++)
+        wasRowHandled[i] = false;
+
     // permute rows of m
     for (int c = 0; c < SomeMatrix::ncols; c++) {
         for (int r = 0; r < dim; r++) {
@@ -106,6 +109,9 @@ SomeMatrix operator*(const PermutationMatrix<dim, Real>& p, SomeMatrix m) {
 template <int dim, typename Real, class SomeMatrix, typename>
 SomeMatrix operator*(SomeMatrix m, const PermutationMatrix<dim, Real>& p) {
     bool wasColHandled[dim];
+    for (int i = 0; i < dim; i++)
+        wasColHandled[i] = false;
+
     // permute cols of m
     for (int r = 0; r < SomeMatrix::nrows; r++) {
         for (int c = 0; c < dim; c++) {
