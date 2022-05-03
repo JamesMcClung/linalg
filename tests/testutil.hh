@@ -6,4 +6,4 @@
     ASSERT_EQ(mat1.ncols, mat2.ncols);       \
     for (int r = 0; r < mat1.nrows; r++)     \
         for (int c = 0; c < mat1.ncols; c++) \
-            EXPECT_NEAR(mat1(r, c), mat2(r, c), 1e-6);
+            ASSERT_NEAR(mat1(r, c), mat2(r, c), 1e-6);
