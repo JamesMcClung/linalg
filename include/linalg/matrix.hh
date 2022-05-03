@@ -16,10 +16,10 @@ namespace linalg {
 //   - ZeroMatrix: immutable, and all elements are 0
 //   - RecursiveMatrix: allocates blocks when needed
 //   - BandedMatrix: only stores elements within bandwidth
+//   - PermutationMatrix: for efficient storage and multiplication
 //   - FuzzyMatrix?: coarsens elements
 //   - LazyMatrix?: lazily evaluated
 //   - MatrixView?: a view of another matrix
-//   - PermutationMatrix?: creates views of other matrices
 
 ////////////////////////////////////////////////////////////////////////
 //                            DECLARATIONS                            //
