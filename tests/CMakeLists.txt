@@ -15,6 +15,7 @@ add_executable(test_linalg
         test_zeromatrix.cc
         test_bandedmatrix.cc
         test_recursivematrix.cc
+        test_permutation.cc
         test_polymorphism.cc
         test_efficiency.cc
         test_io.cc
