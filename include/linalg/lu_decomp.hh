@@ -51,14 +51,14 @@ class LU_Decomp {
 
 template <class SquareMatrix>
 void LU_Decomp<SquareMatrix>::init() {
-    for (int c = 0; c < dim; c++) {
-        if (l_and_u(c, c) == Real(0)) {
+    for (int i = 0; i < dim; i++) {
+        if (l_and_u(i, i) == Real(0)) {
             throw std::domain_error("Cannot LU-decompose a matrix with a 0 on the diagonal");
         }
-        for (int r = c + 1; r < dim; r++) {
-            l_ref(r, c) /= u(c, c);
-            for (int c2 = c + 1; c2 < dim; c2++) {
-                l_and_u(r, c2) -= l(r, c) * u(c, c2);
+        for (int r = i + 1; r < dim; r++) {
+            l_ref(r, i) /= u(i, i);
+            for (int c = i + 1; c < dim; c++) {
+                l_and_u(r, c) -= l(r, i) * u(i, c);
             }
         }
     }
