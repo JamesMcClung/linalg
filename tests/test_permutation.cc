@@ -57,14 +57,10 @@ TEST(PermutedMatrix, PermuteCols) {
     EXPECT_EQ(f * p, fp);
 }
 
-TEST(PermutedMatrix, MutateOriginalMatrix) {
+TEST(PermutedMatrix, Noop) {
     auto f = FullMatrix({{0, 1, 2}, {3, 4, 5}, {6, 7, 8}});
-    auto f_ref = FullMatrix({{0, 1, 2}, {3, 4, 5}, {-1, 7, 8}});
     PermutationMatrix<3, int> p;
-    p.swapRows(0, 2);
 
-    // TODO I consider this unexpected behavior; use different syntax
-    auto pf = p * f;
-    pf(0, 0) = -1;  // like, this shouldn't change f, right?
-    EXPECT_EQ(f, f_ref);
+    EXPECT_EQ(f * p, f);
+    EXPECT_EQ(p * f, f);
 }

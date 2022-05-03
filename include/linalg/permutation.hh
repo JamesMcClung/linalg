@@ -8,11 +8,7 @@ namespace linalg {
 //                            DESCRIPTION                             //
 ////////////////////////////////////////////////////////////////////////
 
-// A PermutedMatrix wraps another matrix and proves a permuted view
-//   of that matrix's rows or columns.
-
-// A PermutationMatrix is a matrix used to create PermutedMatrices via
-//   multiplication.
+// A PermutationMatrix is a permutation matrix.
 
 ////////////////////////////////////////////////////////////////////////
 //                              UTILITY                               //
@@ -44,66 +40,17 @@ class PermutationMatrix : public Matrix<dim, dim, Real> {
 
     Real operator()(int i, int j) const;
 
-    template <int _dim, typename _Real, class _SomeMatrix>
-    friend auto operator*(const PermutationMatrix<_dim, _Real>& p, _SomeMatrix&& m);
-    template <int _dim, typename _Real, class _SomeMatrix>
-    friend auto operator*(_SomeMatrix&& m, const PermutationMatrix<_dim, _Real>& p);
+    template <int _dim, typename _Real, class _SomeMatrix, typename>
+    friend _SomeMatrix operator*(const PermutationMatrix<_dim, _Real>& p, _SomeMatrix m);
+    template <int _dim, typename _Real, class _SomeMatrix, typename>
+    friend _SomeMatrix operator*(_SomeMatrix m, const PermutationMatrix<_dim, _Real>& p);
 };
 
-////////////////////////////////////////////////////////////////////////
-// PermutedMatrix
+template <int dim, typename Real, class SomeMatrix, typename = std::enable_if_t<SomeMatrix::nrows == dim>>
+SomeMatrix operator*(const PermutationMatrix<dim, Real>& p, SomeMatrix m);
 
-template <class SomeMatrix, typename = void>
-class PermutedMatrix;
-
-template <class SomeMatrix>
-class PermutedMatrix<SomeMatrix, std::enable_if_t<!std::is_const_v<SomeMatrix>>> : public Matrix<SomeMatrix::nrows, SomeMatrix::ncols, typename SomeMatrix::real_t> {
-   private:
-    SomeMatrix& original_matrix;
-    int row_lookups[SomeMatrix::nrows];
-    int col_lookups[SomeMatrix::ncols];
-
-    PermutedMatrix(SomeMatrix& m) : original_matrix(m) {}
-
-   public:
-    typename SomeMatrix::real_t operator()(int i, int j) const {
-        return original_matrix(row_lookups[i], col_lookups[j]);
-    }
-    typename SomeMatrix::real_t& operator()(int i, int j) {
-        return original_matrix(row_lookups[i], col_lookups[j]);
-    }
-
-    template <int _dim, typename _Real, class _SomeMatrix>
-    friend auto operator*(const PermutationMatrix<_dim, _Real>& p, _SomeMatrix&& m);
-    template <int _dim, typename _Real, class _SomeMatrix>
-    friend auto operator*(_SomeMatrix&& m, const PermutationMatrix<_dim, _Real>& p);
-};
-
-template <class SomeMatrix>
-class PermutedMatrix<SomeMatrix, std::enable_if_t<std::is_const_v<SomeMatrix>>> : public Matrix<SomeMatrix::nrows, SomeMatrix::ncols, typename SomeMatrix::real_t> {
-   private:
-    const SomeMatrix& original_matrix;
-    int row_lookups[SomeMatrix::nrows];
-    int col_lookups[SomeMatrix::ncols];
-
-    PermutedMatrix(const SomeMatrix& m) : original_matrix(m) {}
-
-   public:
-    typename SomeMatrix::real_t operator()(int i, int j) const {
-        return original_matrix(row_lookups[i], col_lookups[j]);
-    }
-
-    template <int _dim, typename _Real, class _SomeMatrix>
-    friend auto operator*(const PermutationMatrix<_dim, _Real>& p, _SomeMatrix&& m);
-    template <int _dim, typename _Real, class _SomeMatrix>
-    friend auto operator*(_SomeMatrix&& m, const PermutationMatrix<_dim, _Real>& p);
-};
-
-template <int dim, typename Real, class SomeMatrix>
-auto operator*(const PermutationMatrix<dim, Real>& p, SomeMatrix&& m);
-
-template <int dim, typename Real, class SomeMatrix>
-auto operator*(SomeMatrix&& m, const PermutationMatrix<dim, Real>& p);
+template <int dim, typename Real, class SomeMatrix, typename = std::enable_if_t<SomeMatrix::ncols == dim>>
+SomeMatrix operator*(SomeMatrix m, const PermutationMatrix<dim, Real>& p);
 
 ////////////////////////////////////////////////////////////////////////
 //                            DEFINITIONS                             //
@@ -135,31 +82,46 @@ Real PermutationMatrix<dim, Real>::operator()(int i, int j) const {
     return Real(row_lookups[i] == col_lookups[j]);
 }
 
-////////////////////////////////////////////////////////////////////////
-// PermutedMatrix
-
-template <int dim, typename Real, class SomeMatrix>
-auto operator*(const PermutationMatrix<dim, Real>& p, SomeMatrix&& m) {
-    auto pm = PermutedMatrix<std::remove_reference_t<SomeMatrix>>(std::forward<SomeMatrix>(m));
-    for (int i = 0; i < pm.nrows; i++) {
-        pm.row_lookups[i] = p.row_lookups[i];
+template <int dim, typename Real, class SomeMatrix, typename>
+SomeMatrix operator*(const PermutationMatrix<dim, Real>& p, SomeMatrix m) {
+    bool wasRowHandled[dim];
+    // permute rows of m
+    for (int c = 0; c < SomeMatrix::ncols; c++) {
+        for (int r = 0; r < dim; r++) {
+            if (!wasRowHandled[r]) {
+                Real tmp = m(r, c);
+                int thisr = r;
+                for (int nextr = p.row_lookups[r]; nextr != r; nextr = p.row_lookups[nextr]) {
+                    m(thisr, c) = m(nextr, c);
+                    thisr = nextr;
+                    wasRowHandled[nextr] = true;
+                }
+                m(thisr, c) = tmp;
+            }
+        }
     }
-    for (int i = 0; i < pm.ncols; i++) {
-        pm.col_lookups[i] = i;
-    }
-    return pm;
+    return m;
 }
 
-template <int dim, typename Real, class SomeMatrix>
-auto operator*(SomeMatrix&& m, const PermutationMatrix<dim, Real>& p) {
-    auto pm = PermutedMatrix<std::remove_reference_t<SomeMatrix>>(std::forward<SomeMatrix>(m));
-    for (int i = 0; i < pm.nrows; i++) {
-        pm.row_lookups[i] = i;
+template <int dim, typename Real, class SomeMatrix, typename>
+SomeMatrix operator*(SomeMatrix m, const PermutationMatrix<dim, Real>& p) {
+    bool wasColHandled[dim];
+    // permute cols of m
+    for (int r = 0; r < SomeMatrix::nrows; r++) {
+        for (int c = 0; c < dim; c++) {
+            if (!wasColHandled[c]) {
+                Real tmp = m(r, c);
+                int thisc = c;
+                for (int nextc = p.col_lookups[c]; nextc != c; nextc = p.col_lookups[nextc]) {
+                    m(r, thisc) = m(r, nextc);
+                    thisc = nextc;
+                    wasColHandled[nextc] = true;
+                }
+                m(r, thisc) = tmp;
+            }
+        }
     }
-    for (int i = 0; i < pm.ncols; i++) {
-        pm.col_lookups[i] = p.col_lookups[i];
-    }
-    return pm;
+    return m;
 }
 
 }  // namespace linalg
