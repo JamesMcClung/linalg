@@ -70,16 +70,18 @@ PermutationMatrix<dim, Real>::PermutationMatrix() {
 template <int dim, typename Real>
 void PermutationMatrix<dim, Real>::swapRows(int r1, int r2) {
     std::swap(row_lookups[r1], row_lookups[r2]);
+    std::swap(col_lookups[row_lookups[r1]], col_lookups[row_lookups[r2]]);
 }
 
 template <int dim, typename Real>
 void PermutationMatrix<dim, Real>::swapCols(int c1, int c2) {
     std::swap(col_lookups[c1], col_lookups[c2]);
+    std::swap(row_lookups[col_lookups[c1]], row_lookups[col_lookups[c2]]);
 }
 
 template <int dim, typename Real>
 Real PermutationMatrix<dim, Real>::operator()(int i, int j) const {
-    return Real(row_lookups[i] == col_lookups[j]);
+    return Real(row_lookups[i] == j);
 }
 
 template <int dim, typename Real, class SomeMatrix, typename>
@@ -91,6 +93,7 @@ SomeMatrix operator*(const PermutationMatrix<dim, Real>& p, SomeMatrix m) {
     // permute rows of m
     for (int c = 0; c < SomeMatrix::ncols; c++) {
         for (int r = 0; r < dim; r++) {
+            // follow each cycle of rows, but only once per cycle
             if (!wasRowHandled[r]) {
                 Real tmp = m(r, c);
                 int thisr = r;
@@ -115,6 +118,7 @@ SomeMatrix operator*(SomeMatrix m, const PermutationMatrix<dim, Real>& p) {
     // permute cols of m
     for (int r = 0; r < SomeMatrix::nrows; r++) {
         for (int c = 0; c < dim; c++) {
+            // follow each cycle of cols, but only once per cycle
             if (!wasColHandled[c]) {
                 Real tmp = m(r, c);
                 int thisc = c;

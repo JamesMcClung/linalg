@@ -91,3 +91,16 @@ TEST(PermutationMatrix, MultiplyLeft_Big) {
     ASSERT_EQ(p_ref * m, m_row_reversed);
     EXPECT_EQ(p * m, m_row_reversed);
 }
+
+TEST(PermutationMatrix, Multiply_WrongWay) {
+    auto f = FullMatrix({{0, 1, 2}, {3, 4, 5}, {6, 7, 8}});
+    PermutationMatrix<3, int> p1, p2;
+
+    p1.swapRows(0, 1);
+    p2.swapCols(0, 1);
+
+    ASSERT_EQ(p1, p2);
+
+    EXPECT_EQ(p1 * f, p2 * f);
+    EXPECT_EQ(f * p1, f * p2);
+}
