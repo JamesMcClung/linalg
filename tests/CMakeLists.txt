@@ -20,6 +20,7 @@ add_executable(test_linalg
         test_efficiency.cc
         test_io.cc
         test_lu.cc
+        test_lup.cc
         test_thomas.cc
         
         test_complex.cc
