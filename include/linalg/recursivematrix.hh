@@ -63,31 +63,31 @@ class RecursiveMatrix : public Matrix<nrows, ncols, Real> {
     RecursiveMatrix(const Real &r);
     explicit RecursiveMatrix(const Matrix<nrows, ncols, Real> &m);
     explicit RecursiveMatrix(const ZeroMatrix<nrows, ncols, Real> &z);
-    RecursiveMatrix(const RecursiveMatrix<nrows, ncols, nbrows, nbcols, Real> &r);
-    RecursiveMatrix(RecursiveMatrix<nrows, ncols, nbrows, nbcols, Real> &&r);
+    RecursiveMatrix(const RecursiveMatrix &r);
+    RecursiveMatrix(RecursiveMatrix &&r);
 
     Real operator()(int i, int j) const override;
     Real &operator()(int i, int j);
 
-    bool operator==(const RecursiveMatrix<nrows, ncols, nbrows, nbcols, Real> &m2) const;
-    bool operator!=(const RecursiveMatrix<nrows, ncols, nbrows, nbcols, Real> &m2) const;
+    bool operator==(const RecursiveMatrix &m2) const;
+    bool operator!=(const RecursiveMatrix &m2) const;
 
     bool operator==(const ZeroMatrix<nrows, ncols, Real> &m2) const;
     bool operator!=(const ZeroMatrix<nrows, ncols, Real> &m2) const;
 
-    RecursiveMatrix<nrows, ncols, nbrows, nbcols, Real> operator+(const RecursiveMatrix<nrows, ncols, nbrows, nbcols, Real> &m) const;
-    RecursiveMatrix<nrows, ncols, nbrows, nbcols, Real> operator-(const RecursiveMatrix<nrows, ncols, nbrows, nbcols, Real> &m) const;
+    RecursiveMatrix operator+(const RecursiveMatrix &m) const;
+    RecursiveMatrix operator-(const RecursiveMatrix &m) const;
 
-    RecursiveMatrix<nrows, ncols, nbrows, nbcols, Real> operator-() const;
+    RecursiveMatrix operator-() const;
 
-    RecursiveMatrix<nrows, ncols, nbrows, nbcols, Real> operator*(const Real &r) const;
-    RecursiveMatrix<nrows, ncols, nbrows, nbcols, Real> operator/(const Real &r) const;
+    RecursiveMatrix operator*(const Real &r) const;
+    RecursiveMatrix operator/(const Real &r) const;
 
-    RecursiveMatrix<nrows, ncols, nbrows, nbcols, Real> &operator+=(const RecursiveMatrix<nrows, ncols, nbrows, nbcols, Real> &m);
-    RecursiveMatrix<nrows, ncols, nbrows, nbcols, Real> &operator-=(const RecursiveMatrix<nrows, ncols, nbrows, nbcols, Real> &m);
+    RecursiveMatrix &operator+=(const RecursiveMatrix &m);
+    RecursiveMatrix &operator-=(const RecursiveMatrix &m);
 
-    RecursiveMatrix<nrows, ncols, nbrows, nbcols, Real> &operator*=(const Real &r);
-    RecursiveMatrix<nrows, ncols, nbrows, nbcols, Real> &operator/=(const Real &r);
+    RecursiveMatrix &operator*=(const Real &r);
+    RecursiveMatrix &operator/=(const Real &r);
 
     template <int nr, int ni, int nc, int nbr, int nbi, int nbc, typename R>
     friend RecursiveMatrix<nr, nc, nbr, nbc, R> operator*(const RecursiveMatrix<nr, ni, nbr, nbi, R> &m1, const RecursiveMatrix<ni, nc, nbi, nbc, R> &m2);
