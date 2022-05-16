@@ -65,6 +65,32 @@ TEST(RecursiveMatrix, ConstructorMove) {
     EXPECT_EQ(r2, ref);
 }
 
+TEST(RecursiveMatrix, AssignCopy) {
+    RecursiveMatrix<MAX_FMAT_DIM, 2, 8, 2, double> r1, ref;
+    r1(0, 1) = 3.14;
+    ref(0, 1) = 3.14;
+    RecursiveMatrix<MAX_FMAT_DIM, 2, 8, 2, double> r2;
+
+    ASSERT_EQ(r1, ref);
+    EXPECT_NE(r2, ref);
+    r2 = r1;
+    EXPECT_EQ(r1, ref);
+    EXPECT_EQ(r2, ref);
+}
+
+TEST(RecursiveMatrix, AssignMove) {
+    RecursiveMatrix<MAX_FMAT_DIM, 2, 8, 2, double> r1, ref;
+    r1(0, 1) = 3.14;
+    ref(0, 1) = 3.14;
+    RecursiveMatrix<MAX_FMAT_DIM, 2, 8, 2, double> r2;
+
+    ASSERT_EQ(r1, ref);
+    EXPECT_NE(r2, ref);
+    r2 = std::move(r1);
+    EXPECT_NE(r1, ref);
+    EXPECT_EQ(r2, ref);
+}
+
 template <typename M>
 void test_indexing(M& a) {
     int r = 0;

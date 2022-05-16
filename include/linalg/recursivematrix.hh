@@ -83,6 +83,9 @@ class RecursiveMatrix : public Matrix<nrows, ncols, Real> {
     RecursiveMatrix operator*(const Real &r) const;
     RecursiveMatrix operator/(const Real &r) const;
 
+    RecursiveMatrix &operator=(const RecursiveMatrix &m);
+    RecursiveMatrix &operator=(RecursiveMatrix &&m);
+
     RecursiveMatrix &operator+=(const RecursiveMatrix &m);
     RecursiveMatrix &operator-=(const RecursiveMatrix &m);
 
@@ -138,23 +141,12 @@ RecursiveMatrix<nr, nc, nbr, nbc, Real>::RecursiveMatrix(const ZeroMatrix<nr, nc
 
 template <int nr, int nc, int nbr, int nbc, typename Real>
 RecursiveMatrix<nr, nc, nbr, nbc, Real>::RecursiveMatrix(const RecursiveMatrix<nr, nc, nbr, nbc, Real> &m) : RecursiveMatrix() {
-    for (int i = 0; i < nbr; i++) {
-        for (int j = 0; j < nbc; j++) {
-            auto &p = m.submat_ptrs[i][j];
-            if (!is_submat_zero(p)) {
-                submat_ptrs[i][j].reset(new Submatrix(*p));
-            }
-        }
-    }
+    *this = m;
 }
 
 template <int nr, int nc, int nbr, int nbc, typename Real>
 RecursiveMatrix<nr, nc, nbr, nbc, Real>::RecursiveMatrix(RecursiveMatrix<nr, nc, nbr, nbc, Real> &&m) : RecursiveMatrix() {
-    for (int i = 0; i < nbr; i++) {
-        for (int j = 0; j < nbc; j++) {
-            submat_ptrs[i][j] = std::move(m.submat_ptrs[i][j]);
-        }
-    }
+    *this = std::move(m);
 }
 
 template <int nr, int nc, int nrb, int ncb, typename Real>
@@ -317,6 +309,29 @@ RecursiveMatrix<nr, nc, nbr, nbc, Real> RecursiveMatrix<nr, nc, nbr, nbc, Real>:
         }
     }
     return ret;
+}
+
+template <int nr, int nc, int nbr, int nbc, typename Real>
+RecursiveMatrix<nr, nc, nbr, nbc, Real> &RecursiveMatrix<nr, nc, nbr, nbc, Real>::operator=(const RecursiveMatrix<nr, nc, nbr, nbc, Real> &m) {
+    for (int i = 0; i < nbr; i++) {
+        for (int j = 0; j < nbc; j++) {
+            auto &p = m.submat_ptrs[i][j];
+            if (!is_submat_zero(p)) {
+                submat_ptrs[i][j].reset(new Submatrix(*p));
+            }
+        }
+    }
+    return *this;
+}
+
+template <int nr, int nc, int nbr, int nbc, typename Real>
+RecursiveMatrix<nr, nc, nbr, nbc, Real> &RecursiveMatrix<nr, nc, nbr, nbc, Real>::operator=(RecursiveMatrix<nr, nc, nbr, nbc, Real> &&m) {
+    for (int i = 0; i < nbr; i++) {
+        for (int j = 0; j < nbc; j++) {
+            submat_ptrs[i][j] = std::move(m.submat_ptrs[i][j]);
+        }
+    }
+    return *this;
 }
 
 template <int nr, int nc, int nbr, int nbc, typename Real>
